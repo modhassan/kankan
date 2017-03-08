@@ -4,7 +4,7 @@
 Write simple BASH scripts for creating integration tests.
 
 ```
-$ kankan --help
+$ ./bin/kankan --help
 Usage: kankan OPTIONS
 
 Easy integration tests for the command line.
@@ -57,7 +57,7 @@ declare -ax exclude_check_list=(
 
 # Example output
 ```
-$ kankan
+$ ./bin/kankan
 E..E......................E.E...E.E.............E..E..............
    ☠ _check_section_page_state_translation http://orange.example.com:8080/webservice/escenic/pool/state/published/editor did not have a German version for locale de
    ☠ _check_section_page_state_translation http://orange.example.com:8080/webservice/escenic/pool/state/published/editor did not have a Norwegian version for locale nb
