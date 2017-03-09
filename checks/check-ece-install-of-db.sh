@@ -43,23 +43,20 @@ check_ece_install_have_set_up_ece_db_tables() {
 }
 
 check_ece_install_have_set_up_plugin_db_tables() {
-  find /usr/share/escenic -name "escenic-*" -type d |
-    while read -r plugin_dir; do
-      local plugin_tables_sql="${plugin_dir}/misc/database/mysql/tables.sql"
+  for plugin_dir in $(find /usr/share/escenic -name "escenic-*" -type d); do
+    local plugin_tables_sql="${plugin_dir}/misc/database/mysql/tables.sql"
 
-      if [ ! -r "${plugin_tables_sql}" ]; then
-        continue
-      fi
+    if [ ! -r "${plugin_tables_sql}" ]; then
+      continue
+    fi
 
-      local plugin=${plugin_dir##/usr/share/escenic/escenic-}
+    local plugin=${plugin_dir##/usr/share/escenic/escenic-}
 
-      grep -i "create table" "${plugin_tables_sql}" |
-        awk '{print $3}' |
-        while read -r table; do
-          _run_sql_mysql "describe ${table}" || {
-            flag_error "Table ${table} from plugin ${plugin} should be present" \
-                       "in schema ${ece_db_schema} on ${HOSTNAME}"
-          }
-        done
+    for table in $(grep -i "create table" "${plugin_tables_sql}" | awk '{print $3}'); do
+      _run_sql_mysql "describe ${table}" || {
+        flag_error "Table ${table} from plugin ${plugin} should be present" \
+                   "in schema ${ece_db_schema} on ${HOSTNAME}"
+      }
     done
+  done
 }
