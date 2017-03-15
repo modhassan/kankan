@@ -5,7 +5,7 @@
 ## by @torsteinkrause
 
 declare -a url_list_200_ok_and_xml=()
-declare -a exclude_check_list=()
+declare -a check_list=()
 number_of_errors=0
 number_of_tests=0
 
@@ -187,16 +187,11 @@ main() {
   for f in "${dir}/../checks/"*.sh; do
     local exclude_check=0
 
-    for el in "${exclude_check_list[@]}"; do
+    for el in "${check_list[@]}"; do
       if [[ "${f}" == *"${el}"* ]]; then
-        exclude_check=1
-        continue
+        source "${f}" || exit 1
       fi
     done
-    if [ "${exclude_check}" -eq 1 ]; then
-      continue
-    fi
-    source "${f}" || exit 1
   done
 
   local -a checks_executed=()
