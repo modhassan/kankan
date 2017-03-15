@@ -61,5 +61,5 @@ check_swedish_section_page_state_translation() {
 }
 
 check_german_section_page_state_translation() {
-  _check_section_page_state_translation "German" "Publiziert" "de"
+  _check_section_page_state_translation "German" "Veröffentlichen" "de"
 }
