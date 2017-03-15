@@ -30,19 +30,26 @@ _run_sql_mysql() {
 }
 
 check_ece_install_have_set_up_ece_db_tables() {
-  if [[ -n "${ece_db_user}" &&
-          -n "${ece_db_password}" &&
-          -n "${ece_db_schema}" ]]; then
-    local sql='
+  if [[ -z "${ece_db_user}" ||
+          -z "${ece_db_password}" ||
+          -z "${ece_db_schema}" ]]; then
+    return
+  fi
+  local sql='
       select count(contentID) from Content;
     '
-    _run_sql_mysql "${sql}" || {
-      flag_error "Should have set up DB with schema ${ece_db_schema} on ${HOSTNAME}"
-    }
-  fi
+  _run_sql_mysql "${sql}" || {
+    flag_error "Should have set up DB with schema ${ece_db_schema} on ${HOSTNAME}"
+  }
 }
 
 check_ece_install_have_set_up_plugin_db_tables() {
+  if [[ -z "${ece_db_user}" ||
+          -z "${ece_db_password}" ||
+          -z "${ece_db_schema}" ]]; then
+    return
+  fi
+
   for plugin_dir in $(find /usr/share/escenic -name "escenic-*" -type d); do
     local plugin_tables_sql="${plugin_dir}/misc/database/mysql/tables.sql"
 
