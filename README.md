@@ -50,8 +50,17 @@ declare -Ax ece_instance_host_port_and_content_type_map=(
   ["banana.example.com"]="story"
 )
 
-declare -ax exclude_check_list=(
-  checks/check-that-doesnt-apply-to-me.sh
+# Which of the tests in the checks directory should be run?
+declare -ax check_list=(
+  check-ece-admin-status.sh
+  check-ece-install-of-analysis-engine.sh
+  check-ece-install-of-db.sh
+  check-ece-install-of-engine-and-search.sh
+  check-ece-install-of-publication.sh
+  check-ece-instances.sh
+  check-ece-VF-6969-section-page-translation.sh
+  check-network.sh
+  check-urls-are-ok.sh
 )
 ```
 
