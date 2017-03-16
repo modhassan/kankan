@@ -12,8 +12,6 @@ check_ece_install_have_installed_engine_files() {
     /opt/tomcat-engine1/escenic/lib
     /var/cache/escenic
     /var/lib/escenic
-    /var/lib/escenic/solr/editorial/core.properties
-    /var/lib/escenic/solr/presentation/core.properties
     /var/log/escenic
     /var/run/escenic
   )
