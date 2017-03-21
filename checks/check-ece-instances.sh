@@ -97,7 +97,9 @@ check_swedish_state_translation() {
 }
 
 check_german_state_translation() {
-  _check_language_state_translation "German" "Publiziert" "de"
+  # Can't use non-ASCII as we're escaping non-ASCII on the server side
+  # with HTML entity equivalents.
+  _check_language_state_translation "German" "Ver.*ffentlicht" "de"
 }
 
 check_list_of_urls_that_should_return_vdf() {
