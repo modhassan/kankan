@@ -18,7 +18,7 @@ check_ece_install_have_installed_publication() {
 
 check_ece_install_have_installed_publication() {
   local dir=/etc/escenic/engine/common/neo/publications/
-  "${dir}/"Pub-*.properties &> /dev/null || {
+  ls "${dir}/"Pub-*.properties &> /dev/null || {
     flag_error "Should have set up Nursery conf in ${dir}"
   }
 }
