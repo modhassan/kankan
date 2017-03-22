@@ -1,5 +1,5 @@
 
-## kankan - Easy integration tests
+## kankan 👁 - Easy integration tests - 看看
 
 Write simple BASH scripts for creating integration tests.
 
@@ -91,4 +91,6 @@ for a more advanced example, executing the same tests against multiple
 machines.
 
 # What's in a name
-`kankan` is Chinese for `look`, or `check` (it out).
+`kankan` is Chinese for `look`, or `check` (it out). The Chinese
+characters are 看看.
+
