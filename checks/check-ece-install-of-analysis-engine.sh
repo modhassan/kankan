@@ -63,11 +63,13 @@ check_ece_install_have_set_up_analysis_db_tables() {
   if [[ -n "${analysis_db_user}" &&
           -n "${analysis_db_password}" &&
           -n "${analysis_db_schema}" ]]; then
-    local sql='
-      select count(objId) from Pageview;
-    '
-    _run_sql_mysql "${sql}" || {
-      flag_error "Should have set up DB with schema ${analysis_db_schema} on ${HOSTNAME}"
-    }
+
+
+    for table in Pageview PageviewMeta; do
+      local sql="select count(*) from ${table};"
+      _run_sql_mysql "${sql}" || {
+        flag_error "Should have set up DB with schema ${analysis_db_schema} on ${HOSTNAME}"
+      }
+    done
   fi
 }
