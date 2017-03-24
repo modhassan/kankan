@@ -41,7 +41,7 @@ check_that_search_is_working() {
     local uri="http://${host_and_port}/webservice/search/*/"
     local -i total_results=0
     total_results=$(
-      curl -s  -u "${http_auth}" "${uri}"  |
+      curl -s  -u "${http_auth}" "${uri}" 2> /dev/null |
         grep totalResults |
         tail -n 1 |
         sed -n -r 's#.*totalResults="([^"]*)".*#\1#p')
@@ -72,8 +72,8 @@ _check_language_state_translation() {
       count=$(
         curl -s \
              --header "Accept-Language: ${locale}" \
-             "${el}" |
-          xmllint --format - |
+             "${el}" - 2>/dev/null |
+          xmllint --format - 2> /dev/null |
           grep -c -w "${string_to_test_for}")
       if [ "${count}" -lt 1 ]; then
         flag_error "${uri_fragment}" "did not have a ${language_name} version for locale ${locale}"
@@ -111,7 +111,7 @@ check_list_of_urls_that_should_return_vdf() {
     ((number_of_tests++))
     local uri_fragment=${el##http://${host_and_port}}
 
-    curl -I -s "${el}" |
+    curl -I -s "${el}" 2> /dev/null |
       grep --quiet -i "^Content-Type: application/vnd.vizrt.model+xml"
     if [ $? -ne 0 ]; then
       flag_error "${uri_fragment} did NOT return VDF"

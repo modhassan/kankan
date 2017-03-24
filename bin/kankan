@@ -162,7 +162,7 @@ check_list_of_urls_that_should_return_200_and_be_well_formed_xml() {
       continue
     fi
 
-    curl -s "${el}" | xmllint --format - > /dev/null || {
+    curl -s "${el}" | xmllint --format - &> /dev/null || {
       flag_error "${uri_fragment} isn't well formed XML"
     }
   done

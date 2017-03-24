@@ -38,8 +38,19 @@ check_cache_has_created_varnish_conf() {
 check_cache_has_installed_varnish() {
   local -a files=(
     /usr/sbin/varnishd
-    /etc/default/varnish
   )
+
+  if [ -e /etc/redhat-release ]; then
+    files=(
+      "${files[@]}"
+      /etc/varnish/varnish.params
+    )
+  elif [ -e /etc/debian_version ]; then
+    files=(
+      "${files[@]}"
+      /etc/default/varnish
+    )
+  fi
 
   for file in "${files[@]}"; do
     ((number_of_tests++))

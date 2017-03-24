@@ -37,7 +37,7 @@ _check_section_page_state_translation() {
         curl -s \
              --header "Accept-Language: ${locale}" \
              "${el}" |
-          xmllint --format - |
+          xmllint --format - 2>/dev/null |
           grep -c -w "${string_to_test_for}")
       if [ "${count}" -lt 1 ]; then
         flag_error "${uri_fragment}" "did not have a ${language_name} version for locale ${locale}"
