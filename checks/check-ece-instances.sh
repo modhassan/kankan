@@ -72,7 +72,7 @@ _check_language_state_translation() {
       count=$(
         curl -s \
              --header "Accept-Language: ${locale}" \
-             "${el}" - 2>/dev/null |
+             "${el}" 2>/dev/null |
           xmllint --format - 2> /dev/null |
           grep -c -w "${string_to_test_for}")
       if [ "${count}" -lt 1 ]; then
