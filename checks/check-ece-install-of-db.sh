@@ -3,7 +3,8 @@
 check_ece_install_have_installed_db_files() {
   local -a files=(
     /usr/bin/mysql
-    /usr/sbin/mysqld
+    /usr/bin/mysqld_safe
+    /usr/bin/mysqld_multi
   )
 
   for file in "${files[@]}"; do
