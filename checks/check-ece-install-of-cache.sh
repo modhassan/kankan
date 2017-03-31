@@ -72,3 +72,15 @@ check_cache_varnish_conf_is_valid() {
     flag_error "Varnish configuration is invalid: ${file}"
   }
 }
+
+check_cache_varnish_conf_robots_txt_for_beta() {
+  local expected="User-Agent: *
+Disallow /"
+  local actual=
+  actual=$(curl --silent --header "Host: beta.localhost" \
+                    http://localhost:6081/robots.txt)
+
+  if [[ "${expected}" != "${actual}" ]]; then
+    flag_error "Varnish conf for beta.*/robots.txt is wrong"
+  fi
+}
