@@ -140,7 +140,7 @@ bootstrap_thyself() {
 
 check_list_of_urls_that_should_return_200_and_be_well_formed_xml() {
   if [ "${has_initialised_ece_instance_check-0}" -eq 0 ]; then
-    init_check_ece_instances
+    init_check_ece_instances 2> /dev/null || true
   fi
 
   _tmp=$(declare -p url_list_200_ok_and_xml)
@@ -208,9 +208,10 @@ main() {
   done
 
   if [ ${disable_log_files-0} -eq 0 ]; then
-    mkdir -p "${HOME}/.kankan"
-    print_report |
-      tee "$HOME/.kankan/$(date --iso)-$(date +%s)-results.log"
+    local dir=
+    dir="${HOME}/.kankan/$(date --iso)"
+    mkdir -p "${dir}"
+    print_report | tee "${dir}/$(date --iso)-$(date +%s)-results.log"
   else
     print_report
   fi
