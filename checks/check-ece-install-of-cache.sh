@@ -1,6 +1,9 @@
 # -*- mode: sh; sh-shell: bash; -*-
 
 ##          author: torstein@escenic.com
+
+_cache_varnish_port=80
+
 check_cache_has_created_varnish_conf() {
   local -a files=(
     /etc/varnish/caching-policies.vcl
@@ -66,6 +69,14 @@ check_cache_has_installed_varnish() {
   done
 }
 
+check_cache_varnish_runs_on_correct_port() {
+  netstat --tcp -4  -nlp |
+    grep -w varnishd  |
+    grep -w -q "${_cache_varnish_port}" || {
+    flag_error "Varnish should run on port ${_cache_varnish_port}"
+  }
+}
+
 check_cache_varnish_conf_is_valid() {
   local file=/etc/varnish/default.vcl
   /usr/sbin/varnishd -C -f "${file}" &> /dev/null || {
@@ -78,7 +89,7 @@ check_cache_varnish_conf_robots_txt_for_beta() {
 Disallow /"
   local actual=
   actual=$(curl --silent --header "Host: beta.localhost" \
-                    http://localhost:6081/robots.txt)
+                http://localhost:${_cache_varnish_port}/robots.txt)
 
   if [[ "${expected}" != "${actual}" ]]; then
     flag_error "Varnish conf for beta.*/robots.txt is wrong"
