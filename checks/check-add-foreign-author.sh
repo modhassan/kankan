@@ -7,11 +7,9 @@ _foreign_create_content_item() {
   local title=
   local body=
   local publication=
-  local user_and_password=
-
+  local http_auth=
 
   for el in "${!ece_instance_host_port_and_http_auth_map[@]}"; do
-    user_and_password=$el
     title=$(fortune | head -n 1)
     body=$(fortune)
 
@@ -22,31 +20,86 @@ _foreign_create_content_item() {
     http_auth="${ece_instance_host_port_and_http_auth_map[${el}]}"
     local content_type="${ece_instance_host_port_and_content_type_map[${el}]}"
 
-    local xpath='/endpoint/link[@rel="sections"]/@href'
-    sub_section_uri=$(
-      curl \
-        --silent \
-        --user "${http_auth}" \
-        --request GET \
-        "${ws_base_url}/index.xml" |
-        sed 's#xmlns=".*"##' |
-        xmllint --xpath "${xpath}" - |
-        sed -r 's#.*["](.*)["].*#\1#')
-
+    sub_section_uri=$(_foreign_get_sub_section_uri)
     local root_section_uri=
-    xpath='/feed/entry/link[@rel="http://www.vizrt.com/types/relation/content-items"]/@href'
-    root_section_uri=$(
-      curl \
-        --silent \
-        --user "${http_auth}" \
-        --request GET \
-        "${ws_base_url}/${sub_section_uri}" |
-        xmllint --format - |
-        sed 's#xmlns=".*"##' |
-        xmllint --xpath "${xpath}" - |
-        sed -r 's#.*["](.*)["].*#\1#')
+    root_section_uri=$(_foreign_get_root_section_uri)
 
-    cat > "${tmp_file}" <<EOF
+    local content_item_url=
+    content_item_url=$(_foreign_create_content_item_from_xml "${tmp_file}" "${root_section_uri}")
+    # We get some nonsense character at the end because of standard
+    # error/out redirect. Removing it here.
+    end=$(( ${#content_item_url} - 1 ))
+
+    local content_item_uri="${content_item_url:0:${end}}"
+
+    curl \
+      --silent \
+      --user "${http_auth}" \
+      "${content_item_uri}"\
+      > "${tmp_file}"
+
+    _foreign_add_random_author_to_content_item \
+      "${tmp_file}" \
+      "${content_item_uri}"
+
+    curl --silent --user "${http_auth}" "${content_item_uri}" > "${tmp_file}"
+
+    xmlstarlet \
+      sel \
+      -N a="http://www.w3.org/2005/Atom" \
+      -t \
+      -v "/a:entry/a:author/a:name" \
+      "${tmp_file}" |
+      grep -c -q "${random_author_name}" || {
+      flag_error "No foreign author with name '${random_author_name}'"
+    }
+    xmlstarlet \
+      sel \
+      -N a="http://www.w3.org/2005/Atom" \
+      -t \
+      -v "/a:entry/a:author/a:name" \
+      "${tmp_file}" |
+      grep -c -q "${random_author_uri}" || {
+      flag_error "No foreign author with uri ${random_author_uri}"
+    }
+  done
+
+  # cat "${tmp_file}"
+
+  rm -rf "${tmp_file}"
+
+}
+
+_foreign_get_sub_section_uri() {
+  local xpath='/endpoint/link[@rel="sections"]/@href'
+  curl \
+    --silent \
+    --user "${http_auth}" \
+    --request GET \
+    "${ws_base_url}/index.xml" |
+    sed 's#xmlns=".*"##' |
+    xmllint --xpath "${xpath}" - |
+    sed -r 's#.*["](.*)["].*#\1#'
+}
+
+_foreign_get_root_section_uri() {
+  local xpath='/feed/entry/link[@rel="http://www.vizrt.com/types/relation/content-items"]/@href'
+  curl \
+    --silent \
+    --user "${http_auth}" \
+    --request GET \
+    "${ws_base_url}/${sub_section_uri}" |
+    xmllint --format - |
+    sed 's#xmlns=".*"##' |
+    xmllint --xpath "${xpath}" - |
+    sed -r 's#.*["](.*)["].*#\1#'
+}
+
+_foreign_create_content_item_from_xml() {
+  local tmp_file=$1
+  local root_section_uri=$2
+
+  cat > "${tmp_file}" <<EOF
 <?xml version="1.0"?>
 <entry xmlns="http://www.w3.org/2005/Atom"
   xmlns:app="http://www.w3.org/2007/app"
@@ -67,30 +120,6 @@ _foreign_create_content_item() {
 </entry>
 EOF
 
-    local content_item_url=
-    content_item_url=$(_foreign_create_content_item_from_xml "${tmp_file}" "${root_section_uri}")
-    # We get some nonsense character at the end because of standard
-    # error/out redirect. Removing it here.
-    end=$(( ${#content_item_url} - 1 ))
-
-    curl \
-      --silent \
-      --user "${http_auth}" \
-      "${content_item_url:0:${end}}" \
-      > "${tmp_file}"
-
-    _foreign_add_random_author_to_content_item \
-      "${tmp_file}" \
-      "${content_item_url:0:${end}}"
-  done
-
-  # cat "${tmp_file}"
-
-  rm -rf "${tmp_file}"
-
-}
-
-_foreign_create_content_item_from_xml() {
   curl \
     --silent \
     --include \
@@ -119,14 +148,16 @@ _foreign_add_random_author_to_content_item() {
 
 _foreign_add_random_author_to_xml() {
   local tmp_file=$1
+  random_author_name=$(_foreign_random_author_name)
+  random_author_uri=$(_foreign_random_author_uri)
 
   xmlstarlet \
     ed -P --inplace \
     -N a="http://www.w3.org/2005/Atom" \
     -s /a:entry -t elem -n TMP -v "" \
     -r /a:entry/TMP -v author \
-    -s /a:entry/author -t elem -n name -v "$(_foreign_random_author_name)" \
-    -s /a:entry/author -t elem -n uri -v "$(_foreign_random_author_uri)" \
+    -s /a:entry/author -t elem -n name -v "${random_author_name}" \
+    -s /a:entry/author -t elem -n uri -v "${random_author_uri}" \
     "${tmp_file}"
 }
 
