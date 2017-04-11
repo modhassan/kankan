@@ -4,22 +4,16 @@ _foreign_create_content_item() {
   local tmp_file=
   tmp_file=$(mktemp)
 
-  local title=
-  local body=
-  local publication=
   local http_auth=
 
   for el in "${!ece_instance_host_port_and_http_auth_map[@]}"; do
-    title=$(fortune | head -n 1)
-    body=$(fortune)
-
     local host_and_port=$el
     local ws_base_url=http://${host_and_port}/webservice
 
-    local publication="${ece_instance_host_port_and_publication_map[${el}]}"
     http_auth="${ece_instance_host_port_and_http_auth_map[${el}]}"
     local content_type="${ece_instance_host_port_and_content_type_map[${el}]}"
 
+    local sub_section_uri=
     sub_section_uri=$(_foreign_get_sub_section_uri)
     local root_section_uri=
     root_section_uri=$(_foreign_get_root_section_uri)
@@ -64,10 +58,7 @@ _foreign_create_content_item() {
     }
   done
 
-  # cat "${tmp_file}"
-
   rm -rf "${tmp_file}"
-
 }
 
 _foreign_get_sub_section_uri() {
@@ -98,6 +89,11 @@ _foreign_get_root_section_uri() {
 _foreign_create_content_item_from_xml() {
   local tmp_file=$1
   local root_section_uri=$2
+
+  local title=
+  local body=
+  title=$(fortune | head -n 1)
+  body=$(fortune)
 
   cat > "${tmp_file}" <<EOF
 <?xml version="1.0"?>
