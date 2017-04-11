@@ -81,7 +81,7 @@ EOF
            --upload-file "${tmp_file}" \
            "${root_section_uri}" 2>&1 |
         sed -n -r 's#Location: ([a-z0-9]*)#\1#p'
-      )
+                    )
     echo content_item_url="$content_item_url"
 
     # We get some nonsense character at the end because of standard
@@ -94,7 +94,17 @@ EOF
       "${content_item_url:0:${end}}" |
       xmllint --format - > "${tmp_file}"
 
-    # TODO add author in tmp_file
+    xmlstarlet \
+      ed -P --inplace \
+      -N a="http://www.w3.org/2005/Atom" \
+      -s /a:entry -t elem -n TMP -v "" \
+      -r /a:entry/TMP -v author \
+      -s /a:entry/author -t elem -n name -v "$(_foreign_random_author_name)" \
+      -s /a:entry/author -t elem -n uri -v "$(_foreign_random_author_uri)" \
+      "${tmp_file}"
+
+    cat "${tmp_file}"
+
     # TODO PUT this back
 
 
@@ -104,7 +114,14 @@ EOF
 
   rm -rf "${tmp_file}"
 
+}
 
+_foreign_random_author_name() {
+  fortune | head -n 1 | cut -d' ' -f1,2 | sed 's#^[ ]##'
+}
+
+_foreign_random_author_uri() {
+  printf "%s\n" "https://example.com/user/${RANDOM}"
 }
 
 _foreign_update_content_item_with_foreign_author() {
