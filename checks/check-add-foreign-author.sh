@@ -1,6 +1,6 @@
 # Emacs: -*- mode: sh; sh-shell: bash; -*-
 
-_foreign_create_content_item() {
+check_can_add_foreign_author() {
   local tmp_file=
   tmp_file=$(mktemp)
 
@@ -163,13 +163,4 @@ _foreign_random_author_name() {
 
 _foreign_random_author_uri() {
   printf "%s\n" "https://example.com/user/${RANDOM}"
-}
-
-_foreign_update_content_item_with_foreign_author() {
-  :
-}
-
-check_can_add_foreign_author() {
-  _foreign_create_content_item
-
 }
