@@ -45,16 +45,18 @@ check_can_add_foreign_author() {
       -v "/a:entry/a:author/a:name" \
       "${tmp_file}" |
       grep -c -q "${random_author_name}" || {
-      flag_error "No foreign author with name '${random_author_name}'"
+      flag_error "No foreign author with name '${random_author_name}'" \
+                 "in content item" "${content_item_uri}"
     }
     xmlstarlet \
       sel \
       -N a="http://www.w3.org/2005/Atom" \
       -t \
-      -v "/a:entry/a:author/a:name" \
+      -v "/a:entry/a:author/a:uri" \
       "${tmp_file}" |
       grep -c -q "${random_author_uri}" || {
-      flag_error "No foreign author with uri ${random_author_uri}"
+      flag_error "No foreign author with uri ${random_author_uri}" \
+                 "in content item" "${content_item_uri}"
     }
   done
 
