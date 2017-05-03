@@ -24,7 +24,11 @@ check_can_add_foreign_author() {
     # error/out redirect. Removing it here.
     end=$(( ${#content_item_url} - 1 ))
 
-    local content_item_uri="${content_item_url:0:${end}}"
+    if [ "${end}" -gt 0 ]; then
+      local content_item_uri="${content_item_url:0:${end}}"
+    else
+      local content_item_uri=${content_item_url}
+    fi
 
     curl \
       --silent \
