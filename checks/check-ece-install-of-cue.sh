@@ -30,7 +30,7 @@ check_cue_available_on_port_80() {
   }
 }
 
-check_escenic_webstudio_available_on_port_80() {
+check_cue_escenic_webstudio_available_on_port_80() {
   local url=http://localhost:80/escenic/index.jsp
 
   curl --silent --head "${url}" |
@@ -39,7 +39,7 @@ check_escenic_webstudio_available_on_port_80() {
   }
 }
 
-check_escenic_webservice_available_on_port_80() {
+check_cue_escenic_webservice_available_on_port_80() {
   local url=http://localhost:80/webservice/index.xml
 
   curl --silent --head "${url}" |
