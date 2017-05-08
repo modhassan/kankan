@@ -29,3 +29,21 @@ check_cue_available_on_port_80() {
     flag_error "CUE web interface isn't available: ${url} "
   }
 }
+
+check_escenic_webstudio_available_on_port_80() {
+  local url=http://localhost:80/escenic/index.jsp
+
+  curl --silent --head "${url}" |
+    grep -w -q '200 OK' || {
+    flag_error "Escenic web studio isn't available: ${url} "
+  }
+}
+
+check_escenic_webservice_available_on_port_80() {
+  local url=http://localhost:80/webservice/index.xml
+
+  curl --silent --head "${url}" |
+    grep -w -q '401 Unauthorized' || {
+    flag_error "Escenic webservice isn't available: ${url} "
+  }
+}
