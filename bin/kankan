@@ -132,10 +132,10 @@ print_report() {
 
 bootstrap_thyself() {
   local dir=${BASH_SOURCE%/*}
-  source "${dir}/../lib/color.sh" || {
-    echo "I need my colours, even with a 'u'"
-    exit 1
-  }
+
+  for el in "${dir}/../lib/"*.sh; do
+    source "${el}"|| exit 1
+  done
 }
 
 check_list_of_urls_that_should_return_200_and_be_well_formed_xml() {
