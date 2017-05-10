@@ -3,7 +3,7 @@
 ## $1 :: uri
 ## $2 :: HTTP auth
 ## $3 :: HTTP header name
-get_http_header_from_uri() {
+http_get_header_from_uri() {
   local uri=$1
   local http_auth=$2
   local http_header=$3
@@ -28,4 +28,20 @@ get_http_header_from_uri() {
   fi
 
   echo "${result}"
+}
+
+
+http_put_atom_entry() {
+  local uri=$1
+  local http_auth=$2
+  local file=$3
+
+  curl \
+    --silent \
+    --user "${http_auth}" \
+    --request PUT \
+    --header "If-Match: *" \
+    --header "Content-Type: application/atom+xml; type=entry" \
+    --upload-file "${file}" \
+    "${uri}"
 }
