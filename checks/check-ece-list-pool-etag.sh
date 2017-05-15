@@ -1,36 +1,5 @@
 # Emacs: -*- mode: sh; sh-shell: bash; -*-
 
-## $1 :: file
-## $2 :: xpath
-xml_xpath() {
-  local file=$1
-  local xpath=$2
-
-  xmlstarlet \
-    sel \
-    -N a="http://www.w3.org/2005/Atom" \
-    -N v="http://www.vizrt.com/types" \
-    -t \
-    -v \
-    "${xpath}" \
-    "${file}"
-}
-
-xml_xpath_set_value() {
-  local file=$1
-  local xpath=$2
-  local value=$3
-
-  xmlstarlet \
-    ed \
-    --inplace \
-    -N a="http://www.w3.org/2005/Atom" \
-    -N v="http://www.vizrt.com/types" \
-    -u "${xpath}" \
-    -v "${value}" \
-    "${file}"
-}
-
 ## $1 :: list pool id
 _clp_change_pinned_states() {
   local uri=$1
