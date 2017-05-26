@@ -64,3 +64,47 @@ check_ece_install_have_installed_search_files() {
   done
 
 }
+
+## $1 :: dir of escenic/lib
+_check_ece_install_duplicates() {
+  local escenic_lib_dir=$1
+
+  if [ ! -d "${escenic_lib_dir}" ]; then
+    return
+  fi
+
+  local list=
+  list=$(find "${escenic_lib_dir}" -name "*.jar" |
+    sed "s#${escenic_lib_dir}/##" |
+    sort |
+    sed 's#[0-9]##g' |
+    sed 's#develop-SNAPSHOT##' |
+    sed 's#..-.jar##')
+
+  declare -A _errors
+
+  for el in ${list}; do
+    local count=
+    count=$(grep -c "${el}" <<< "${list}")
+    if [ "${count}" -gt 1 ]; then
+      _errors["${el}"]=$count
+    fi
+  done
+
+  for el in "${!_errors[@]}"; do
+    local fn_base=${el//\./}
+    fn_base=${fn_base//jar}
+    flag_error "Duplicates found:" $(ls "${escenic_lib_dir}/${fn_base}"*)
+  done
+}
+
+check_ece_install_duplicates() {
+  local engine_tomcat_dir=${engine_tomcat_dir-/opt/tomcat-engine1}
+  local escenic_lib_dir="${engine_tomcat_dir}/escenic/lib"
+
+  _check_ece_install_duplicates "${escenic_lib_dir}"
+
+  local search_tomcat_dir=${search_tomcat_dir-/opt/tomcat-search}
+  escenic_lib_dir="${search_tomcat_dir}/escenic/lib"
+  _check_ece_install_duplicates "${escenic_lib_dir}"
+}
