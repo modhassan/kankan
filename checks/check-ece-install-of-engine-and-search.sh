@@ -104,7 +104,7 @@ check_ece_install_duplicates() {
 
   _check_ece_install_duplicates "${escenic_lib_dir}"
 
-  local search_tomcat_dir=${search_tomcat_dir-/opt/tomcat-search}
+  local search_tomcat_dir=${search_tomcat_dir-/opt/tomcat-search1}
   escenic_lib_dir="${search_tomcat_dir}/escenic/lib"
   _check_ece_install_duplicates "${escenic_lib_dir}"
 }
