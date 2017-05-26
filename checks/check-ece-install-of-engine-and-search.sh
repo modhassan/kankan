@@ -66,7 +66,7 @@ check_ece_install_have_installed_search_files() {
 }
 
 ## $1 :: dir of escenic/lib
-_check_ece_install_duplicates() {
+_check_ece_install_no_duplicates() {
   local escenic_lib_dir=$1
 
   if [ ! -d "${escenic_lib_dir}" ]; then
@@ -98,13 +98,13 @@ _check_ece_install_duplicates() {
   done
 }
 
-check_ece_install_duplicates() {
+check_ece_install_no_duplicates() {
   local engine_tomcat_dir=${engine_tomcat_dir-/opt/tomcat-engine1}
   local escenic_lib_dir="${engine_tomcat_dir}/escenic/lib"
 
-  _check_ece_install_duplicates "${escenic_lib_dir}"
+  _check_ece_install_no_duplicates "${escenic_lib_dir}"
 
   local search_tomcat_dir=${search_tomcat_dir-/opt/tomcat-search1}
   escenic_lib_dir="${search_tomcat_dir}/escenic/lib"
-  _check_ece_install_duplicates "${escenic_lib_dir}"
+  _check_ece_install_no_duplicates "${escenic_lib_dir}"
 }
