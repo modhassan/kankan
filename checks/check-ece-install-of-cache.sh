@@ -13,7 +13,6 @@ check_cache_has_created_varnish_conf() {
     /etc/varnish/default.vcl
     /etc/varnish/cookie-cleaner.vcl
     /etc/varnish/robots-on-beta.vcl
-    /etc/varnish/varnish-hacks.vcl
     /etc/varnish/serve-stale-content.vcl
     /etc/varnish/host-specific.vcl
     /etc/varnish/access-control.vcl
