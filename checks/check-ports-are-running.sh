@@ -13,7 +13,7 @@ check_port_list_is_running() {
   for port in "${port_list[@]}"; do
     ((number_of_tests++))
 
-    netstat -nlp | grep -c ${port} &> /dev/null || {
+    netstat -nlp | grep -w ${port} &> /dev/null || {
         flag_error "Port ${port} isn't running"
     }
 
