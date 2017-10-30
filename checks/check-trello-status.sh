@@ -2,7 +2,9 @@
 
 check_trello_setup_have_required_files() {
   local -a files=(
-    /home/escenic/enrichment-service/boardState.json
+    /home/escenic/enrichment-service/conf/Configuration.yml
+    /home/escenic/enrichment-service/escenic-services/escenic.conf.yml
+    /home/escenic/enrichment-service/escenic-services/trello-story-planning/trello.conf.yml
     /etc/nginx/sites-available/trello
     /etc/escenic/${cue}/trello.yml
   )
