@@ -2,7 +2,7 @@
 
 check_drop_trigger_setup_have_required_files() {
   local -a files=(
-    /etc/escenic/cue-web-2.5/drop-trigger.yml
+    /etc/escenic/${cue}/drop-trigger.yml
     /etc/nginx/default-site/nginx_trigger.conf
   )
 
@@ -23,7 +23,8 @@ check_drop_trigger_setup_have_required_files() {
 check_drop_trigger_urls(){
   local -a drop_trigger_url_list=(
       http://${ece_domain_name}/NewsgateImageImport
-      http://${ece_domain_name}/NewsgateImageImport
+      http://${ece_domain_name}/NewsgatePdfImport
+      http://${ece_domain_name}/GoogleImageImport
   )
   for url in "${drop_trigger_url_list[@]}"; do
       ((number_of_tests++))
