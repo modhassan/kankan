@@ -156,9 +156,9 @@ check_list_of_urls_that_should_return_200_and_be_well_formed_xml() {
       echo -n "."
     fi
 
-    curl -s -I "${el}" | grep --quiet "^HTTP/1.1 200 OK"
+    curl -s -I "${el}" | grep --quiet "^HTTP/1.1 200"
     if [ $? -ne 0 ]; then
-      flag_error "${uri_fragment} did NOT return 200 OK"
+      flag_error "${uri_fragment} did NOT return 200"
       continue
     fi
 
