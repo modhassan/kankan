@@ -44,6 +44,7 @@ OPTIONS
 -h, --help          This screen.
 -p, --print-checks  List all the checks ${0##*/} has run
 -v, --verbose       Be verbose
+-f, --fail-if-error Exit with 1 If any check fails
 EOF
   exit 0
 }
@@ -55,6 +56,7 @@ read_user_input() {
            --long verbose \
            --long print-checks \
            --long disable-logs \
+           --long fail-if-error \
            --long help \
            -n 'parse-options' \
            -- "$@")
@@ -77,6 +79,9 @@ read_user_input() {
         break;;
       -p | --print-checks )
         print_checks=1;
+        break;;
+      -f | --fail-if-error )
+        fail_if_error=1;
         break;;
       -- )
         shift;
@@ -214,6 +219,12 @@ main() {
     print_report | tee "${dir}/$(date --iso)-$(date +%s)-results.log"
   else
     print_report
+  fi
+
+  if [ ${fail_if_error-0} -eq 1 ]; then
+    if [[ ${number_of_errors} > 0 ]]; then
+      exit 1
+    fi
   fi
 }
 
