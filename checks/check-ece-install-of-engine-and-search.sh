@@ -35,8 +35,6 @@ check_ece_install_have_installed_search_files() {
     /etc/default/ece
     /etc/escenic/ece-search1.conf
     /etc/escenic/ece.conf
-    /etc/escenic/solr/editorial/schema.xml
-    /etc/escenic/solr/presentation/schema.xml
     /etc/init.d/ece
     /etc/init.d/solr
     /opt/solr
