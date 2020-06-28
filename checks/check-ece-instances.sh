@@ -3,7 +3,6 @@
 has_initialised_ece_instance_check=0
 
 declare -a url_list_vdf=()
-declare -a url_list_language=()
 
 init_check_ece_instances() {
   for el in "${!ece_instance_host_port_and_http_auth_map[@]}"; do
@@ -21,11 +20,6 @@ init_check_ece_instances() {
     url_list_vdf=(
       http://"${http_auth}"@${host_and_port}/webservice/escenic/publication/${publication}/model/content-type/${content_type}
       ${url_list_vdf[@]}
-    )
-
-    url_list_language=(
-      http://"${http_auth}"@${host_and_port}/webservice/escenic/content/state/published/editor
-      ${url_list_language[@]}
     )
   done
 
@@ -51,55 +45,6 @@ check_that_search_is_working() {
       flag_error "Searching isn't working using ${uri}"
     fi
   done
-}
-
-_check_language_state_translation() {
-  if [ "${has_initialised_ece_instance_check}" -eq 0 ]; then
-    init_check_ece_instances
-  fi
-
-  local language_name=$1
-  local string_to_test_for=$2
-  local locales=$3
-
-  for el in "${url_list_language[@]}"; do
-    local uri_fragment=${el##http://${host_and_port}}
-
-    local count=
-
-    for locale in ${locales}; do
-      ((number_of_tests++))
-      count=$(
-        curl -s \
-             --header "Accept-Language: ${locale}" \
-             "${el}" 2>/dev/null |
-          xmllint --format - 2> /dev/null |
-          grep -c -w "${string_to_test_for}")
-      if [ "${count}" -lt 1 ]; then
-        flag_error "${uri_fragment}" "did not have a ${language_name} version for locale ${locale}"
-      fi
-
-      if [ "${verbose-0}" -eq 1 ]; then
-        echo "Verified ${language_name} language for locale ${locale}: ${uri_fragment} ..."
-      else
-        echo -n "."
-      fi
-    done
-  done
-}
-
-check_norwegian_state_translation() {
-  _check_language_state_translation "Norwegian" "Publisert" "no nb"
-}
-
-check_swedish_state_translation() {
-  _check_language_state_translation "Swedish" "Publicerad" "sv"
-}
-
-check_german_state_translation() {
-  # Can't use non-ASCII as we're escaping non-ASCII on the server side
-  # with HTML entity equivalents.
-  _check_language_state_translation "German" "Ver.*ffentlicht" "de"
 }
 
 check_list_of_urls_that_should_return_vdf() {
