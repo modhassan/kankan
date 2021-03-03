@@ -38,7 +38,7 @@ check_that_search_is_working() {
       curl -s  -u "${http_auth}" "${uri}" 2> /dev/null |
         grep totalResults |
         tail -n 1 |
-        sed -n -r 's#.*totalResults>"([0-9]+).*#\1#p')
+        sed -n -r 's#.*totalResults>([0-9]+).*#\1#p')
     if [ "${total_results}" -gt 0 ]; then
       echo -n "."
     else
